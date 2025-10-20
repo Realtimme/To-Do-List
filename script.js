@@ -1,64 +1,96 @@
+let tasks = [];
+let finishedTasks = [];
+
+// ✅ Load tasks from localStorage when page loads
+window.onload = function () {
+    const savedTasks = JSON.parse(localStorage.getItem("tasks"));
+    const savedFinished = JSON.parse(localStorage.getItem("finishedTasks"));
+
+    if (savedTasks) {
+        tasks = savedTasks;
+        tasks.forEach(task => renderTask(task));
+    }
+
+    if (savedFinished) {
+        finishedTasks = savedFinished;
+        finishedTasks.forEach(task => renderFinishedTask(task));
+    }
+};
+
 function addTask() {
     const taskInput = document.getElementById("taskInput");
     const taskText = taskInput.value.trim();
-
     if (taskText === "") return;
 
+    const dateTime = new Date().toLocaleString();
+
+    const task = {
+        text: taskText,
+        added: dateTime
+    };
+
+    tasks.push(task);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+
+    renderTask(task);
+
+    taskInput.value = "";
+}
+
+function handleKeyPress(event) {
+    if (event.key === "Enter") {
+        addTask();
+    }
+}
+
+function renderTask(task) {
     const taskList = document.getElementById("taskList");
 
-    // Create task item
     const li = document.createElement("li");
 
-    // Task content
     const topRow = document.createElement("div");
     topRow.className = "top-row";
 
     const taskSpan = document.createElement("span");
-    taskSpan.textContent = taskText;
+    taskSpan.textContent = task.text;
 
     const btn = document.createElement("button");
     btn.textContent = "✅";
-    btn.onclick = () => markAsFinished(li, taskText, dateTime);
+    btn.onclick = () => markAsFinished(li, task);
 
     topRow.appendChild(taskSpan);
     topRow.appendChild(btn);
 
-    // Date and time
-    const dateTime = new Date().toLocaleString();
     const dateSpan = document.createElement("small");
-    dateSpan.textContent = `Added: ${dateTime}`;
+    dateSpan.textContent = `Added: ${task.added}`;
 
     li.appendChild(topRow);
     li.appendChild(dateSpan);
 
     taskList.appendChild(li);
-    taskInput.value = "";
-}
-function handleKeyPress(event) {
-  if (event.key === "Enter") {
-    addTask();
-  }
 }
 
+function markAsFinished(taskElement, task) {
+    // Remove from current task list
+    tasks = tasks.filter(t => t.text !== task.text || t.added !== task.added);
+    localStorage.setItem("tasks", JSON.stringify(tasks));
 
-function updateClock() {
-  const clock = document.getElementById("clock");
-  const now = new Date();
+    // Add to finished list
+    const finishedTask = {
+        text: task.text,
+        added: task.added,
+        finished: new Date().toLocaleString()
+    };
 
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
-  const seconds = String(now.getSeconds()).padStart(2, '0');
+    finishedTasks.push(finishedTask);
+    localStorage.setItem("finishedTasks", JSON.stringify(finishedTasks));
 
-  clock.textContent = `${hours}:${minutes}:${seconds}`;
+    renderFinishedTask(finishedTask);
+
+    taskElement.remove();
 }
 
-// Start the clock and update every second
-setInterval(updateClock, 1000);
-updateClock(); // initial call
-
-
-
-function markAsFinished(taskElement, taskText, addedDateTime) {
+function renderFinishedTask(task) {
     const finishedList = document.getElementById("finishedList");
 
     const li = document.createElement("li");
@@ -68,22 +100,34 @@ function markAsFinished(taskElement, taskText, addedDateTime) {
     topRow.className = "top-row";
 
     const span = document.createElement("span");
-    span.textContent = taskText;
-
-    const dateSpan = document.createElement("small");
-    dateSpan.textContent = `Finished: ${new Date().toLocaleString()}`;
+    span.textContent = task.text;
 
     topRow.appendChild(span);
     li.appendChild(topRow);
 
-    const originalTime = document.createElement("small");
-    originalTime.textContent = `Started: ${addedDateTime}`;
-    li.appendChild(originalTime);
-    li.appendChild(dateSpan);
+    const started = document.createElement("small");
+    started.textContent = `Started: ${task.added}`;
+
+    const finished = document.createElement("small");
+    finished.textContent = `Finished: ${task.finished}`;
+
+    li.appendChild(started);
+    li.appendChild(finished);
 
     finishedList.appendChild(li);
-
-    // Remove from main task list
-    taskElement.remove();
 }
 
+// ⏰ Live clock at top
+function updateClock() {
+    const clock = document.getElementById("clock");
+    const now = new Date();
+
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    clock.textContent = `${hours}:${minutes}:${seconds}`;
+}
+
+setInterval(updateClock, 1000);
+updateClock();
