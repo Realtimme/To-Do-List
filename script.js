@@ -117,6 +117,48 @@ function renderFinishedTask(task) {
     finishedList.appendChild(li);
 }
 
+function renderFinishedTask(task) {
+    const finishedList = document.getElementById("finishedList");
+
+    const li = document.createElement("li");
+    li.classList.add("completed");
+
+    const topRow = document.createElement("div");
+    topRow.className = "top-row";
+
+    const span = document.createElement("span");
+    span.textContent = task.text;
+
+    // Create delete button
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "🗑️";
+    deleteBtn.title = "Delete finished task";
+    deleteBtn.style.marginLeft = "10px";
+    deleteBtn.onclick = () => {
+        // Remove from finishedTasks array
+        finishedTasks = finishedTasks.filter(t => t.text !== task.text || t.added !== task.added);
+        localStorage.setItem("finishedTasks", JSON.stringify(finishedTasks));
+        // Remove from DOM
+        li.remove();
+    };
+
+    topRow.appendChild(span);
+    topRow.appendChild(deleteBtn);
+    li.appendChild(topRow);
+
+    const started = document.createElement("small");
+    started.textContent = `Started: ${task.added}`;
+
+    const finished = document.createElement("small");
+    finished.textContent = `Finished: ${task.finished}`;
+
+    li.appendChild(started);
+    li.appendChild(finished);
+
+    finishedList.appendChild(li);
+}
+
+
 // ⏰ Live clock at top
 function updateClock() {
     const clock = document.getElementById("clock");
