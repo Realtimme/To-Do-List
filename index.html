@@ -1,38 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <title>To-Do List with Date & Time</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>To-Do Task</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="header">
-        <h1>TO-DO TASK</h1>
-        <div id="clock"></div>
-    </div>
+  <div class="header">
+    <h1>TO-DO TASK</h1>
+    <div id="clock"></div>
+    <a href="focus.html" class="nav-btn">🎯 Focus Mode</a>
+  </div>
 
-    <div class="app-wrapper">
-        <div class="main-container">
-            <div class="todo-container">
-                <h1>To-Do List</h1>
-                <div class="input-section">
-                    <input type="text" id="taskInput" placeholder="Enter a task..."
-                        onkeypress="handleKeyPress(event)" />
-                    <button onclick="addTask()">Add</button>
-                </div>
-                <ul id="taskList"></ul>
-            </div>
-
-            <div class="finished-container">
-                <h2>Finished Tasks</h2>
-                <ul id="finishedList"></ul>
-            </div>
+  <div class="app-wrapper">
+    <div class="main-container">
+      <div class="todo-container">
+        <h1>To-Do List</h1>
+        <div class="input-section">
+          <input type="text" id="taskInput" placeholder="Enter a task..." onkeypress="handleKeyPress(event)" />
+          <button onclick="addTask()">Add</button>
         </div>
-        
+        <ul id="taskList"></ul>
+      </div>
 
-        <script src="script.js"></script>
+      <div class="finished-container">
+        <h2>Finished Tasks</h2>
+        <ul id="finishedList"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
-
 </html>
