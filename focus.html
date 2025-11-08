@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Focus Mode</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="header">
+    <h1>🎯 Focus Mode</h1>
+    <div class="header-controls">
+      <div id="clock"></div>
+      <button class="back-btn" onclick="window.location.href='index.html'">← Back to Tasks</button>
+    </div>
+  </div>
+
+  <div class="focus-wrapper">
+    <div class="focus-container">
+      <h2>Select Task to Focus On</h2>
+
+      <div class="focus-setup">
+        <select id="focusTaskSelect">
+          <option value="">Loading tasks...</option>
+        </select>
+
+        <select id="focusTimeSelect">
+          <option value="5">5 min</option>
+          <option value="10">10 min</option>
+          <option value="15">15 min</option>
+          <option value="20">20 min</option>
+          <option value="25">25 min</option>
+          <option value="30">30 min</option>
+        </select>
+
+        <button onclick="startFocus()">Start</button>
+      </div>
+
+      <div id="focusStatus">
+        <p>No focus session active.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="focus.js"></script>
+</body>
+</html>
