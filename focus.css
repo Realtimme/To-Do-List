@@ -1,0 +1,179 @@
+/* === focus.css === */
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(120deg, #fdfbfb, #ebedee);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: white;
+  padding: 15px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 10;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+  color: #333;
+}
+
+#clock {
+  font-size: 18px;
+  color: #555;
+  font-family: monospace;
+}
+
+.back-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+button {
+  background-color: #1abc9c;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+/* MAIN */
+.focus-wrapper {
+  margin-top: 120px;
+  display: flex;
+  justify-content: center;
+}
+
+.focus-container {
+  background: white;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  padding-left: 200px;
+    padding-right: 200px;
+    padding-bottom: 30px;
+  border-radius: 14px;
+  width: 400px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  text-align: center;
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
+}
+
+.focus-setup {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 260px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+}
+
+#focusTaskSelect option {
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* STATUS BOX */
+#focusStatus {
+  text-align: center;
+  min-height: 140px;
+  max-height: 150px;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: 12px;
+  transition: 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: #fafafa;
+}
+
+/* STATES */
+#focusStatus.active {
+  background-color: #fff8e1;
+  border: 2px solid #f5c542;
+}
+
+#focusStatus.finished {
+  background-color: #e7ffe7;
+  border: 2px solid #58c47a;
+}
+
+#focusStatus.stopped {
+  background-color: #ffeaea;
+  border: 2px solid #ff7373;
+}
+
+/* TEXT */
+.focus-container p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.3;
+  text-align: center;
+  word-break: break-word;
+}
+
+.focus-time {
+  font-weight: bold;
+  font-size: 1.4rem;
+  color: #333;
+}
+
+/* STOP BUTTON */
+.stop-btn {
+  background: #f44336;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.stop-btn:hover {
+  background: #c62828;
+}
