@@ -1,3 +1,6 @@
+/* === style.css === */
+
+/* GLOBAL */
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(120deg, #fdfbfb, #ebedee);
@@ -8,13 +11,14 @@ body {
   align-items: center;
 }
 
+/* HEADER */
 .header {
   position: fixed;
   top: 0;
   width: 100%;
   background: white;
   padding: 15px 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   z-index: 10;
 }
@@ -25,20 +29,13 @@ body {
   color: #333;
 }
 
-.header-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  margin-top: 8px;
-}
-
 #clock {
   font-size: 18px;
   color: #555;
   font-family: monospace;
 }
 
+/* BUTTONS */
 .focus-btn, .back-btn {
   background-color: #3498db;
   color: white;
@@ -54,7 +51,8 @@ body {
   background-color: #2980b9;
 }
 
-.app-wrapper, .focus-wrapper {
+/* MAIN LAYOUT */
+.app-wrapper {
   margin-top: 120px;
   display: flex;
   justify-content: center;
@@ -65,19 +63,8 @@ body {
   gap: 40px;
 }
 
-
-.todo-container{
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  width: 300px;
-  font-size: 15px;
-  height: 500px;
-  overflow-y: auto;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.finished-container{
+/* TO-DO / FINISHED BOXES */
+.todo-container, .finished-container {
   background: white;
   padding: 20px;
   border-radius: 12px;
@@ -96,6 +83,7 @@ body {
   border-top: 5px solid #2ecc71;
 }
 
+/* INPUT */
 .input-section {
   display: flex;
   gap: 10px;
@@ -124,15 +112,20 @@ button:hover {
   background-color: #16a085;
 }
 
+/* TASK ITEM */
 li {
   margin-bottom: 12px;
-  font-weight: bold;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
-  background-color: #ffeaea;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff5f5;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: 0.2s ease;
+}
+
+li:hover {
+  transform: translateY(-2px);
 }
 
 li .top-row {
@@ -143,57 +136,51 @@ li .top-row {
 }
 
 li .task-text {
-  font-weight: bold;
+  font-weight: 600;
   color: #333;
   font-size: 16px;
+  max-width: 75%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-li small {
+/* DATE BLOCK */
+.date-block, li small {
   font-size: 13px;
   color: #777;
   margin-left: 2px;
 }
 
 li.completed {
-  background-color: #e6f9e5;
+  background-color: #e9fff0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
-.focus-container {
-  background: white;
-  padding: 30px;
-  border-radius: 14px;
-  width: 400px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  text-align: center;
-}
-
-.focus-setup {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-select {
-  padding: 8px;
+/* TASK BUTTONS */
+li button {
+  background-color: #2ecc71;
+  border: none;
+  color: white;
+  padding: 6px 10px;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-#focusStatus {
-  font-size: 18px;
-  font-weight: bold;
-  color: #555;
+li button:hover {
+  background-color: #27ae60;
 }
 
-#focusStatus.active {
-  color: #27ae60;
+li.completed button {
+  background-color: #e74c3c;
 }
 
-#focusStatus.finished {
-  color: #c0392b;
+li.completed button:hover {
+  background-color: #c0392b;
 }
 
+/* NAV BUTTON */
 .nav-btn {
   display: inline-block;
   background-color: #f39c12;
@@ -202,10 +189,11 @@ select {
   border-radius: 8px;
   text-decoration: none;
   font-weight: bold;
-  margin-top: 15px; /* adds nice space below clock */
+  margin-top: 15px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
+
 .nav-btn:hover {
   background-color: #e67e22;
   transform: translateY(-2px);
