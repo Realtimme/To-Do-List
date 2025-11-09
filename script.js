@@ -1,51 +1,83 @@
-let tasks = [];
-let finishedTasks = [];
+// =============================
+// To-Do List + Focus Mode Script
+// =============================
 
-// ✅ Load tasks from localStorage when page loads
-window.onload = function () {
-  const savedTasks = JSON.parse(localStorage.getItem("tasks"));
-  const savedFinished = JSON.parse(localStorage.getItem("finishedTasks"));
+// --- Data Storage ---
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let finishedTasks = JSON.parse(localStorage.getItem("finishedTasks")) || [];
+let focusTask = null;
 
-  if (savedTasks) {
-    tasks = savedTasks;
-    tasks.forEach((task) => renderTask(task));
-  }
+// --- DOM References ---
+const taskList = document.getElementById("taskList");
+const finishedList = document.getElementById("finishedList");
+const taskInput = document.getElementById("taskInput");
+const focusTaskSelect = document.getElementById("focusTask");
+const focusStatus = document.getElementById("focusStatus");
 
-  if (savedFinished) {
-    finishedTasks = savedFinished;
-    finishedTasks.forEach((task) => renderFinishedTask(task));
-  }
-};
+// --- Initialization ---
+renderAll();
+
+// =============================
+// Task Management
+// =============================
 
 function addTask() {
-  const taskInput = document.getElementById("taskInput");
-  const taskText = taskInput.value.trim();
-  if (taskText === "") return;
-
-  const dateTime = new Date().toLocaleString();
+  const text = taskInput.value.trim();
+  if (text === "") return;
 
   const task = {
-    text: taskText,
-    added: dateTime,
+    text,
+    added: new Date().toLocaleString(),
   };
 
   tasks.push(task);
   localStorage.setItem("tasks", JSON.stringify(tasks));
-
   renderTask(task);
-
+  updateFocusTaskSelect();
   taskInput.value = "";
 }
 
-function handleKeyPress(event) {
-  if (event.key === "Enter") {
-    addTask();
-  }
+function markAsFinished(li, task) {
+  li.remove();
+
+  const finishedTask = {
+    ...task,
+    finished: new Date().toLocaleString(),
+  };
+
+  finishedTasks.push(finishedTask);
+  tasks = tasks.filter((t) => t.text !== task.text || t.added !== task.added);
+
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  localStorage.setItem("finishedTasks", JSON.stringify(finishedTasks));
+
+  renderFinishedTask(finishedTask);
+  updateFocusTaskSelect();
+}
+
+function deleteFinishedTask(li, task) {
+  li.remove();
+  finishedTasks = finishedTasks.filter(
+    (t) => t.text !== task.text || t.added !== task.added
+  );
+  localStorage.setItem("finishedTasks", JSON.stringify(finishedTasks));
+  updateFocusTaskSelect();
+}
+
+// =============================
+// Rendering Functions
+// =============================
+
+function renderAll() {
+  taskList.innerHTML = "";
+  finishedList.innerHTML = "";
+
+  tasks.forEach(renderTask);
+  finishedTasks.forEach(renderFinishedTask);
+  updateFocusTaskSelect();
 }
 
 function renderTask(task) {
-  const taskList = document.getElementById("taskList");
-
   const li = document.createElement("li");
 
   const topRow = document.createElement("div");
@@ -57,6 +89,7 @@ function renderTask(task) {
 
   const btn = document.createElement("button");
   btn.textContent = "✅";
+  btn.title = "Mark as finished";
   btn.onclick = () => markAsFinished(li, task);
 
   topRow.appendChild(taskSpan);
@@ -72,29 +105,7 @@ function renderTask(task) {
   taskList.appendChild(li);
 }
 
-function markAsFinished(taskElement, task) {
-  // Remove from current task list
-  tasks = tasks.filter((t) => t.text !== task.text || t.added !== task.added);
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-
-  // Add to finished list
-  const finishedTask = {
-    text: task.text,
-    added: task.added,
-    finished: new Date().toLocaleString(),
-  };
-
-  finishedTasks.push(finishedTask);
-  localStorage.setItem("finishedTasks", JSON.stringify(finishedTasks));
-
-  renderFinishedTask(finishedTask);
-
-  taskElement.remove();
-}
-
 function renderFinishedTask(task) {
-  const finishedList = document.getElementById("finishedList");
-
   const li = document.createElement("li");
   li.classList.add("completed");
 
@@ -102,174 +113,88 @@ function renderFinishedTask(task) {
   topRow.className = "top-row";
 
   const span = document.createElement("span");
+  span.className = "task-text";
   span.textContent = task.text;
 
-  topRow.appendChild(span);
-  li.appendChild(topRow);
-  const started = document.createElement("div");
-  started.innerHTML = `<small>Started:</small> <small>${task.added}</small>`;
-
-  const finished = document.createElement("div");
-  finished.innerHTML = `<small>Finished:</small> <small>${task.finished}</small>`;
-
-  li.appendChild(started);
-  li.appendChild(finished);
-
-  finishedList.appendChild(li);
-}
-
-function renderFinishedTask(task) {
-  const finishedList = document.getElementById("finishedList");
-
-  const li = document.createElement("li");
-  li.classList.add("completed");
-
-  const topRow = document.createElement("div");
-  topRow.className = "top-row";
-
-  const span = document.createElement("span");
-  span.textContent = task.text;
-
-  // Create delete button
   const deleteBtn = document.createElement("button");
   deleteBtn.textContent = "🗑️";
   deleteBtn.title = "Delete finished task";
-  deleteBtn.style.marginLeft = "10px";
-  deleteBtn.onclick = () => {
-    // Remove from finishedTasks array
-    finishedTasks = finishedTasks.filter(
-      (t) => t.text !== task.text || t.added !== task.added
-    );
-    localStorage.setItem("finishedTasks", JSON.stringify(finishedTasks));
-    // Remove from DOM
-    li.remove();
-  };
+  deleteBtn.onclick = () => deleteFinishedTask(li, task);
 
   topRow.appendChild(span);
   topRow.appendChild(deleteBtn);
+
+  const started = document.createElement("div");
+  started.className = "date-block";
+  started.innerHTML = `<small>Started:</small> <small>${task.added}</small>`;
+
+  const finished = document.createElement("div");
+  finished.className = "date-block";
+  finished.innerHTML = `<small>Finished:</small> <small>${task.finished}</small>`;
+
   li.appendChild(topRow);
-
-  const started = document.createElement("small");
-  started.textContent = `Started: ${task.added}`;
-
-  const finished = document.createElement("small");
-  finished.textContent = `Finished: ${task.finished}`;
-
   li.appendChild(started);
   li.appendChild(finished);
 
   finishedList.appendChild(li);
 }
 
-// ⏰ Live clock at top
-function updateClock() {
-  const clock = document.getElementById("clock");
-  const now = new Date();
+// =============================
+// Focus Mode
+// =============================
 
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  const seconds = String(now.getSeconds()).padStart(2, "0");
+function updateFocusTaskSelect() {
+  if (!focusTaskSelect) return;
+  focusTaskSelect.innerHTML = "";
 
-  clock.textContent = `${hours}:${minutes}:${seconds}`;
-}
-
-setInterval(updateClock, 1000);
-updateClock();
-
-// 🎯 Focus Mode
-let focusTimer = null;
-let focusRemaining = 0;
-let focusTask = "";
-let focusSound = new Audio(
-  "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
-);
-
-// Update task dropdown every time tasks change
-function updateFocusTaskOptions() {
-  const select = document.getElementById("focusTaskSelect");
-  select.innerHTML = '<option value="">Select a task to focus on...</option>';
-  tasks.forEach((t, index) => {
+  if (tasks.length === 0) {
     const option = document.createElement("option");
-    option.value = index;
-    option.textContent = t.text;
-    select.appendChild(option);
-  });
-}
-
-// Modify addTask() to refresh dropdown
-const originalAddTask = addTask;
-addTask = function () {
-  originalAddTask();
-  updateFocusTaskOptions();
-};
-
-// Also refresh after loading saved tasks
-window.onload = function () {
-  const savedTasks = JSON.parse(localStorage.getItem("tasks"));
-  const savedFinished = JSON.parse(localStorage.getItem("finishedTasks"));
-
-  if (savedTasks) {
-    tasks = savedTasks;
-    tasks.forEach((task) => renderTask(task));
-  }
-
-  if (savedFinished) {
-    finishedTasks = savedFinished;
-    finishedTasks.forEach((task) => renderFinishedTask(task));
-  }
-
-  updateFocusTaskOptions();
-};
-
-// Start Focus Timer
-function startFocus() {
-  const taskSelect = document.getElementById("focusTaskSelect");
-  const timeSelect = document.getElementById("focusTimeSelect");
-  const status = document.getElementById("focusStatus");
-
-  const selectedTaskIndex = taskSelect.value;
-  const selectedTime = parseInt(timeSelect.value);
-
-  if (selectedTaskIndex === "") {
-    alert("Please select a task to focus on!");
+    option.text = "No active tasks";
+    option.disabled = true;
+    option.selected = true;
+    focusTaskSelect.add(option);
     return;
   }
 
-  focusTask = tasks[selectedTaskIndex].text;
-  focusRemaining = selectedTime * 60; // convert minutes to seconds
-
-  if (focusTimer) clearInterval(focusTimer);
-
-  status.className = "active";
-  updateFocusDisplay();
-
-  focusTimer = setInterval(() => {
-    focusRemaining--;
-    updateFocusDisplay();
-
-    if (focusRemaining <= 0) {
-      clearInterval(focusTimer);
-      focusTimer = null;
-      status.className = "finished";
-      status.innerHTML = `<p>⏰ Time's up! You finished focusing on: <strong>${focusTask}</strong></p>`;
-      focusSound.play();
-    }
-  }, 1000);
+  tasks.forEach((task) => {
+    const option = document.createElement("option");
+    option.text = task.text;
+    option.value = task.text;
+    focusTaskSelect.add(option);
+  });
 }
 
-// Update Focus Display
-function updateFocusDisplay() {
-  const status = document.getElementById("focusStatus");
-  const mins = Math.floor(focusRemaining / 60);
-  const secs = focusRemaining % 60;
-  status.innerHTML = `<p>Focusing on: <strong>${focusTask}</strong></p>
-                    <p>⏱️ Time Left: ${mins.toString().padStart(2, "0")}:${secs
-    .toString()
-    .padStart(2, "0")}</p>
-                    <button onclick="stopFocus()">Stop Focus</button>`;
+function startFocus() {
+  const selectedText = focusTaskSelect.value;
+  if (!selectedText || selectedText === "No active tasks") return;
+
+  focusTask = tasks.find((t) => t.text === selectedText);
+  if (!focusTask) return;
+
+  focusStatus.textContent = `Focusing on: "${focusTask.text}"`;
+  focusStatus.className = "active";
 }
-function stopFocus() {
-  if (focusTimer) clearInterval(focusTimer);
-  document.getElementById("focusStatus").innerHTML =
-    "<p>Focus session stopped.</p>";
+
+function finishFocus() {
+  if (!focusTask) return;
+
+  const li = document.createElement("li");
+  markAsFinished(li, focusTask);
+
+  focusStatus.textContent = "Focus session finished!";
+  focusStatus.className = "finished";
+  focusTask = null;
 }
+
+// =============================
+// Live Clock
+// =============================
+
+function updateClock() {
+  const clock = document.getElementById("clock");
+  if (clock) {
+    clock.textContent = new Date().toLocaleTimeString();
+  }
+}
+setInterval(updateClock, 1000);
+updateClock();
